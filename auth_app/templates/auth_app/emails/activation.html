@@ -1,0 +1,20 @@
+{% extends "auth_app/emails/base.html" %}
+
+{% block title %}Confirm your email{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 32px 0; text-align:center;">
+    <img src="cid:videoflix_logo" alt="Videoflix" width="240" style="max-width:100%; height:auto; border:0;">
+</p>
+<p style="margin:0;">Dear <span style="color:#2e3edf;">{{ user_name }}</span>,</p>
+<p style="margin:0 0 24px 0;">
+    Thank you for registering with <span style="color:#2e3edf;">Videoflix</span>.
+    To complete your registration and verify your email address, please click the link below:
+</p>
+<p style="margin:0 0 24px 0;">
+    <a href="{{ link }}" style="display:inline-block; padding:12px 24px; background-color:#2e3edf; color:#ffffff; font-weight:bold; text-decoration:none; border-radius:40px;">Activate account</a>
+</p>
+<p style="margin:0 0 24px 0;">If you did not create an account with us, please disregard this email.</p>
+<p style="margin:0 0 24px 0;">Best regards,</p>
+<p style="margin:0;">Your Videoflix Team.</p>
+{% endblock %}

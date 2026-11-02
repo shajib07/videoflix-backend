@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -43,13 +44,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'django_rq',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'auth_app',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -160,11 +165,57 @@ MEDIA_ROOT = BASE_DIR / "media"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
+# CORS - the frontend runs on a different port and sends cookies
+
+CORS_ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS
+
+CORS_ALLOW_CREDENTIALS = True
+
+
+# Django REST Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'auth_app.authentication.CookieJWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+
+# JWT - tokens are delivered to the frontend as HTTP-only cookies
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': os.environ.get('EMAIL_HOST', default='localhost'),
+            'port': int(os.environ.get('EMAIL_PORT', default=587)),
+            'username': os.environ.get('EMAIL_HOST_USER', default=''),
+            'password': os.environ.get('EMAIL_HOST_PASSWORD', default=''),
+            'use_tls': os.environ.get('EMAIL_USE_TLS') == 'True',
+            'use_ssl': os.environ.get('EMAIL_USE_SSL') == 'True',
+        },
     },
 }
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'DEFAULT_FROM_EMAIL', default=MAILERS['default']['OPTIONS']['username']
+)
+
+
+# Account emails - the links lead to the frontend and expire after 24 hours
+
+FRONTEND_URL = os.environ.get('FRONTEND_URL', default='http://127.0.0.1:5500')
+
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24
