@@ -108,3 +108,27 @@ variables from the template.
 | `EMAIL_USE_TLS`, `EMAIL_USE_SSL` | Use `True`/`False` for port 587, `False`/`True` for port 465 |
 | `DEFAULT_FROM_EMAIL` | Sender address of the emails |
 | `FRONTEND_URL` | Address of the frontend; the links in the emails point to it. Default: `http://127.0.0.1:5500` |
+
+## Uploading videos
+
+1. Log in to http://127.0.0.1:8000/admin/ with the superuser from `.env`.
+2. Open **Videos** and click **Add video**.
+3. Enter title, description and category, choose the video file and save.
+   A thumbnail is optional; without one, a frame of the video is used.
+4. The RQ worker now converts the video in the background. Depending on the
+   length of the video this takes a while. As soon as **Is converted** is
+   checked in the video list, the video appears in the frontend.
+
+Videos with the same category are shown together in one row of the
+dashboard. The conversion jobs can be watched at
+http://127.0.0.1:8000/django-rq/.
+
+## Using the frontend
+
+1. Clone the frontend:
+   https://github.com/Developer-Akademie-Backendkurs/project.Videoflix
+2. Open it in VS Code and start `index.html` with the **Live Server**
+   extension.
+3. Open the frontend at **http://127.0.0.1:5500** (not `localhost`), because
+   the frontend calls the API at `127.0.0.1:8000` and the login cookies are
+   only sent between the same host names.
