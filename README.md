@@ -132,3 +132,28 @@ http://127.0.0.1:8000/django-rq/.
 3. Open the frontend at **http://127.0.0.1:5500** (not `localhost`), because
    the frontend calls the API at `127.0.0.1:8000` and the login cookies are
    only sent between the same host names.
+
+## API endpoints
+
+All endpoints start with `/api/`. The video endpoints require a logged-in
+user (`access_token` cookie).
+
+### Authentication
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| POST | `/api/register/` | Create an inactive account and send the activation email |
+| GET | `/api/activate/<uidb64>/<token>/` | Activate the account |
+| POST | `/api/login/` | Log in with email and password, sets the JWT cookies |
+| POST | `/api/logout/` | Blacklist the refresh token and delete the cookies |
+| POST | `/api/token/refresh/` | Get a new access token cookie |
+| POST | `/api/password_reset/` | Send the password reset email |
+| POST | `/api/password_confirm/<uidb64>/<token>/` | Set the new password |
+
+### Videos
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| GET | `/api/video/` | List all converted videos, newest first |
+| GET | `/api/video/<movie_id>/<resolution>/index.m3u8` | HLS playlist of a video (`480p`, `720p` or `1080p`) |
+| GET | `/api/video/<movie_id>/<resolution>/<segment>/` | One HLS segment, e.g. `000.ts` |
