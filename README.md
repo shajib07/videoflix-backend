@@ -157,3 +157,47 @@ user (`access_token` cookie).
 | GET | `/api/video/` | List all converted videos, newest first |
 | GET | `/api/video/<movie_id>/<resolution>/index.m3u8` | HLS playlist of a video (`480p`, `720p` or `1080p`) |
 | GET | `/api/video/<movie_id>/<resolution>/<segment>/` | One HLS segment, e.g. `000.ts` |
+
+## Useful commands
+
+Run Django commands inside the running container:
+
+```bash
+docker compose exec web python manage.py makemigrations
+docker compose exec web python manage.py migrate
+docker compose exec web python manage.py createsuperuser
+```
+
+Stop the containers with `Ctrl+C` or:
+
+```bash
+docker compose down
+```
+
+After changing `requirements.txt`, rebuild the image with
+`docker compose up --build`.
+
+## Project structure
+
+```text
+videoflix-backend/
+├── auth_app/                 # Accounts, JWT cookies and account emails
+│   ├── api/                  # Serializers, views and URLs
+│   ├── assets/               # Logo used in the emails
+│   ├── templates/            # HTML and text templates of the emails
+│   ├── authentication.py     # Reads the JWT from the cookie
+│   ├── tasks.py              # Email jobs for the RQ worker
+│   └── utils.py              # Cookie, token and link helpers
+├── video_app/                # Videos, HLS conversion and streaming
+│   ├── api/                  # Serializers, views and URLs
+│   ├── models.py             # Video model
+│   ├── signals.py            # Starts the conversion, deletes files
+│   ├── tasks.py              # FFmpeg conversion job for the RQ worker
+│   └── utils.py              # HLS paths, FFmpeg commands, cache helpers
+├── core/                     # Django settings and root URLs
+├── backend.Dockerfile        # Docker setup provided by the Developer Akademie
+├── backend.entrypoint.sh
+├── docker-compose.yml
+├── .env.template
+└── requirements.txt
+```
