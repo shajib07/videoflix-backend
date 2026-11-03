@@ -9,6 +9,19 @@ This repository contains the REST API built with Django and Django REST
 Framework. The matching frontend is available here:
 https://github.com/Developer-Akademie-Backendkurs/project.Videoflix
 
+## Table of contents
+
+- [Features](#features)
+- [Tech stack](#tech-stack)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Environment variables](#environment-variables)
+- [Uploading videos](#uploading-videos)
+- [Using the frontend](#using-the-frontend)
+- [API endpoints](#api-endpoints)
+- [Useful commands](#useful-commands)
+- [Project structure](#project-structure)
+
 ## Features
 
 - Registration with an activation email; accounts stay inactive until the
